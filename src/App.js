@@ -23,6 +23,8 @@ function App() {
   const [width, setWidth] = useState(280);
   const [height, setHeight] = useState(130);
   const [isSaved, setSaved] = useState(false);
+  const [white, setWhite] = useState(false);
+  const [svg, setSvg] = useState(false);
   const testBtn = () => {
     setSaved(true);
     setLeft(left + 10);
@@ -69,10 +71,36 @@ function App() {
           }}
           className="tools"
         >
-          <button disabled={!isSaved} onClick={downloadButton}>
-            Скачать
+          <button
+            style={{ width: "50%" }}
+            disabled={!isSaved}
+            onClick={downloadButton}
+          >
+            Скачать ⬇️
           </button>
-          <button onClick={testBtn}>Сохранить</button>
+          <button style={{ width: "50%" }} onClick={testBtn}>
+            Сохранить 💾
+          </button>
+          <div style={{ margin: "8px 0" }}>
+            <label htmlFor="white">Белый лого</label>
+            <input
+              id="white"
+              type="checkbox"
+              value={white}
+              onChange={() => (white ? setWhite(false) : setWhite(true))}
+              placeholder="Белый лого"
+            />
+          </div>
+          <div style={{ margin: "8px 0" }}>
+            <label htmlFor="forsvg">SVG</label>
+            <input
+              id="forsvg"
+              type="checkbox"
+              value={svg}
+              onChange={() => (white ? setSvg(false) : setSvg(true))}
+              placeholder="SVG"
+            />
+          </div>
           <div style={{ marginBottom: 16 }}>
             <label htmlFor="turn">Повернуть</label>
             <input
@@ -87,7 +115,7 @@ function App() {
             />
           </div>
           <div>
-            <label htmlFor="positiontop">↕️ По вертикали (top)</label>
+            <label htmlFor="positiontop">По вертикали⏫⏬</label>
             <input
               style={{ width: "60vw" }}
               id="positiontop"
@@ -100,7 +128,7 @@ function App() {
             />
           </div>
           <div style={{ marginBottom: 32 }}>
-            <label htmlFor="positionleft">↔️ По горизонтали (left)</label>
+            <label htmlFor="positionleft">По горизонтали⏪⏩</label>
             <input
               style={{ width: "60vw" }}
               id="positionleft"
@@ -195,12 +223,15 @@ function App() {
               <img
                 style={{
                   borderRadius: "4px",
-                  objectFit: "contain",
-                  backgroundColor: "#036fc6",
+                  // objectFit: "contain",
+                  // backgroundColor: "#036fc6",
                 }}
                 width={width}
                 height={height}
-                src="https://yt3.ggpht.com/ytc/AAUvwngX1zHKQDJeZAtZVOh6OHp_6fB5n-sukiRtSW6FJw=s900-c-k-c0x00ffffff-no-rj"
+                // src="https://yt3.ggpht.com/ytc/AAUvwngX1zHKQDJeZAtZVOh6OHp_6fB5n-sukiRtSW6FJw=s900-c-k-c0x00ffffff-no-rj"
+                src={`/aster-carplate${white ? "-white" : ""}.${
+                  svg ? "svg" : "png"
+                }`}
                 alt=""
               />
             </Hammer>
