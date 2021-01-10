@@ -1,5 +1,6 @@
 import { useState } from "react";
 import html2canvas from "html2canvas";
+import Hammer from "react-hammerjs";
 import "./App.css";
 
 const randCar = [
@@ -21,8 +22,16 @@ function App() {
   const [skewX, setSkewX] = useState(0);
   const [width, setWidth] = useState(280);
   const [height, setHeight] = useState(130);
+  const [isSaved, setSaved] = useState(false);
+  const testBtn = () => {
+    setSaved(true);
+    setLeft(left + 10);
+    setTop(top + 10);
+  };
 
-  const TestButton = () => {
+  const downloadButton = () => {
+    // setLeft(left + 10);
+    // setTop(top + 17);
     html2canvas(document.querySelector(".canva"), {
       letterRendering: 1,
       allowTaint: true,
@@ -31,13 +40,19 @@ function App() {
     }).then((canvas) => {
       var link = document.createElement("a");
       document.body.appendChild(link);
-      link.download = "html_image.png";
-      link.href = canvas.toDataURL("image/png");
+      link.download = "aster_image.jpg";
+      link.href = canvas.toDataURL("image/jpg");
       link.target = "_blank";
       link.click();
+      setSaved(false);
     });
   };
 
+  const dragEnd = (e) => {
+    console.log(e);
+    setLeft(e.center.x);
+    setTop(e.center.y);
+  };
   return (
     <div className="App">
       <div>
@@ -54,7 +69,10 @@ function App() {
           }}
           className="tools"
         >
-          <button onClick={TestButton}>Download</button>
+          <button disabled={!isSaved} onClick={downloadButton}>
+            Скачать
+          </button>
+          <button onClick={testBtn}>Сохранить</button>
           <div style={{ marginBottom: 16 }}>
             <label htmlFor="turn">Повернуть</label>
             <input
@@ -77,7 +95,7 @@ function App() {
               min="-10"
               max="3000"
               value={top}
-              onChange={(e) => setTop(e.target.value)}
+              onChange={(e) => setTop(+e.target.value)}
               step="1"
             />
           </div>
@@ -90,7 +108,7 @@ function App() {
               min="-10"
               max="2000"
               value={left}
-              onChange={(e) => setLeft(e.target.value)}
+              onChange={(e) => setLeft(+e.target.value)}
               step="1"
             />
           </div>
@@ -166,17 +184,26 @@ function App() {
               transform: `rotate(${deg}deg) skewX(${skewX}deg) skewY(${skewY}deg)`,
             }}
           >
-            <img
-              style={{
-                borderRadius: "4px",
-                objectFit: "contain",
-                backgroundColor: "#036fc6",
+            <Hammer
+              onPan={dragEnd}
+              options={{
+                recognizers: {
+                  pinch: { enable: true },
+                },
               }}
-              width={width}
-              height={height}
-              src="https://yt3.ggpht.com/ytc/AAUvwngX1zHKQDJeZAtZVOh6OHp_6fB5n-sukiRtSW6FJw=s900-c-k-c0x00ffffff-no-rj"
-              alt=""
-            />
+            >
+              <img
+                style={{
+                  borderRadius: "4px",
+                  objectFit: "contain",
+                  backgroundColor: "#036fc6",
+                }}
+                width={width}
+                height={height}
+                src="https://yt3.ggpht.com/ytc/AAUvwngX1zHKQDJeZAtZVOh6OHp_6fB5n-sukiRtSW6FJw=s900-c-k-c0x00ffffff-no-rj"
+                alt=""
+              />
+            </Hammer>
           </div>
           <img
             style={{ width: "100%", height: "100%" }}
