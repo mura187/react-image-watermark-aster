@@ -25,10 +25,14 @@ function App() {
   const [isSaved, setSaved] = useState(false);
   const [white, setWhite] = useState(false);
   const [svg, setSvg] = useState(false);
+  const [imgWidth, setImgWidth] = useState("80%");
+  const [imgHeight, setImgHeight] = useState("80%");
   const testBtn = () => {
     setSaved(true);
     setLeft(left + 10);
     setTop(top + 10);
+    // setImgWidth("100%");
+    // setImgHeight("100%");
   };
 
   const downloadButton = () => {
@@ -42,8 +46,8 @@ function App() {
     }).then((canvas) => {
       var link = document.createElement("a");
       document.body.appendChild(link);
-      link.download = "aster_image.jpg";
-      link.href = canvas.toDataURL("image/jpg");
+      link.download = "aster_image.png";
+      link.href = canvas.toDataURL("image/png");
       link.target = "_blank";
       link.click();
       setSaved(false);
@@ -51,9 +55,28 @@ function App() {
   };
 
   const dragEnd = (e) => {
-    console.log(e);
-    setLeft(e.center.x);
-    setTop(e.center.y);
+    // console.log(e);
+    setLeft(e.center.x - 25);
+    setTop(e.center.y - 10);
+  };
+  const handleWidth = (e) => {
+    console.log("width", e);
+    if (width > 100 && e.additionalEvent === "panright") {
+      setWidth(width + 2);
+    }
+    if (width > 100 && e.additionalEvent === "panleft") {
+      setWidth(width - 2);
+    }
+  };
+
+  const handleHeight = (e) => {
+    console.log("height", e);
+    if (height > 70 && e.additionalEvent === "panup") {
+      setHeight(height + 2);
+    }
+    if (height > 70 && e.additionalEvent === "pandown") {
+      setHeight(height - 2);
+    }
   };
   return (
     <div className="App">
@@ -62,7 +85,7 @@ function App() {
           style={{
             position: "absolute",
             left: 0,
-            top: 150,
+            top: 0,
             backgroundColor: "#f8efdfb0",
             padding: "32px",
             display: "flex",
@@ -212,6 +235,32 @@ function App() {
               transform: `rotate(${deg}deg) skewX(${skewX}deg) skewY(${skewY}deg)`,
             }}
           >
+            {!isSaved && (
+              <>
+                <Hammer
+                  direction="DIRECTION_VERTICAL"
+                  onPan={handleHeight}
+                  options={{
+                    recognizers: {
+                      pinch: { enable: true },
+                    },
+                  }}
+                >
+                  <img
+                    width={`${(width * 20) / 100}px`}
+                    height={`${(height * 20) / 100}px`}
+                    src="/vert-arrow.svg"
+                    alt=""
+                    style={{
+                      marginLeft: `${width - 120}px`,
+                      background: "#7e8080ba",
+                      padding: 4,
+                      borderRadius: 5,
+                    }}
+                  />
+                </Hammer>
+              </>
+            )}
             <Hammer
               onPan={dragEnd}
               options={{
@@ -223,21 +272,43 @@ function App() {
               <img
                 style={{
                   borderRadius: "4px",
-                  // objectFit: "contain",
-                  // backgroundColor: "#036fc6",
                 }}
                 width={width}
                 height={height}
-                // src="https://yt3.ggpht.com/ytc/AAUvwngX1zHKQDJeZAtZVOh6OHp_6fB5n-sukiRtSW6FJw=s900-c-k-c0x00ffffff-no-rj"
                 src={`/aster-carplate${white ? "-white" : ""}.${
                   svg ? "svg" : "png"
                 }`}
                 alt=""
               />
             </Hammer>
+            {!isSaved && (
+              <Hammer
+                direction="DIRECTION_HORIZONTAL"
+                onPan={handleWidth}
+                options={{
+                  recognizers: {
+                    pinch: { enable: true },
+                  },
+                }}
+              >
+                <img
+                  width={`${(width * 20) / 100}px`}
+                  height={`${(height * 20) / 100}px`}
+                  src="/vert-arrow.svg"
+                  alt=""
+                  style={{
+                    marginLeft: `${height - 120}px`,
+                    transform: "rotate(90deg)",
+                    background: "#7e8080ba",
+                    padding: 8,
+                    borderRadius: 5,
+                  }}
+                />
+              </Hammer>
+            )}
           </div>
           <img
-            style={{ width: "100%", height: "100%" }}
+            style={{ width: imgWidth, height: imgHeight }}
             src={photoSrc}
             alt="editing"
           />
